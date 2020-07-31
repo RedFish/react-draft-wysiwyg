@@ -439,9 +439,10 @@ class WysiwygEditor extends Component {
     const toolbarShow =
       editorFocused || this.focusHandler.isInputFocused() || !toolbarOnFocus;
     
-    const toolbarComponent = toolbarShow ? <div
+    const toolbarComponent = <div
       className={classNames('rdw-editor-toolbar', toolbarClassName)}
       style={{
+        visibility: toolbarShow ? 'visible' : 'hidden',
         ...toolbarStyle
       }}
       onMouseDown={this.preventDefault}
@@ -461,7 +462,7 @@ class WysiwygEditor extends Component {
         toolbarCustomButtons.map((button, index) =>
           React.cloneElement(button, { key: index, ...controlProps })
         )}
-    </div> : <div />;
+    </div>;
     
     return (
       <div
