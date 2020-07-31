@@ -35,6 +35,7 @@ import defaultToolbar from '../config/defaultToolbar';
 import localeTranslations from '../i18n';
 import './styles.css';
 import '../../css/Draft.css';
+import zIndex from '@material-ui/core/styles/zIndex';
 
 class WysiwygEditor extends Component {
   constructor(props) {
@@ -441,7 +442,7 @@ class WysiwygEditor extends Component {
     const toolbarComponent = toolbarShow ? <div
       className={classNames('rdw-editor-toolbar', toolbarClassName)}
       style={{
-        ...toolbarStyle,
+        ...toolbarStyle
       }}
       onMouseDown={this.preventDefault}
       aria-label="rdw-toolbar"
@@ -460,13 +461,14 @@ class WysiwygEditor extends Component {
         toolbarCustomButtons.map((button, index) =>
           React.cloneElement(button, { key: index, ...controlProps })
         )}
-    </div> : "";
+    </div> : <div />;
+    
     return (
       <div
         id={this.wrapperId}
         className={classNames(wrapperClassName, 'rdw-editor-wrapper')}
         style={wrapperStyle}
-        onClick={this.modalHandler.onEditorClick}
+        onClick={() => { if(!this.state.editorFocused || !toolbarContainer ) this.modalHandler.onEditorClick() }}
         onBlur={this.onWrapperBlur}
         aria-label="rdw-wrapper"
       >

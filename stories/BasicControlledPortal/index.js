@@ -20,10 +20,10 @@ class BasicControlledPortal extends Component {
         <BasicControlled />
 
         <h3>With portal</h3>
+        <div style={{border: "solid gray"}} ref={this.toolbarContainerRef} ></div>
         <BasicControlled
             toolbarContainerRef={this.toolbarContainerRef}
           />
-        <div style={{border: "solid gray"}} ref={this.toolbarContainerRef} ></div>
       </React.Fragment>
     );
   }
@@ -49,7 +49,7 @@ class BasicControlled extends Component {
       toolbarContainer = <Portal container = { toolbarContainerRef.current } ></Portal>
     }
     else {
-      toolbarContainer = this.wrapper ? <Popper open={true} anchorEl={this.wrapper} placement="top"></Popper> : null
+      toolbarContainer = this.wrapper ? <Popper open={true} anchorEl={this.wrapper} placement="top"><div></div></Popper> : null
     }
     return (
       <div className="rdw-storybook-root">
