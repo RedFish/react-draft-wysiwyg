@@ -423,6 +423,7 @@ class WysiwygEditor extends Component {
       wrapperStyle,
       uploadCallback,
       ariaLabel,
+      toolbarContainer
     } = this.props;
 
     const controlProps = {
@@ -436,6 +437,30 @@ class WysiwygEditor extends Component {
     };
     const toolbarShow =
       editorFocused || this.focusHandler.isInputFocused() || !toolbarOnFocus;
+    
+    const toolbarComponent = toolbarShow ? <div
+      className={classNames('rdw-editor-toolbar', toolbarClassName)}
+      style={{
+        ...toolbarStyle,
+      }}
+      onMouseDown={this.preventDefault}
+      aria-label="rdw-toolbar"
+      aria-hidden={(!editorFocused && toolbarOnFocus).toString()}
+      onFocus={this.onToolbarFocus}
+    >
+      {toolbar.options.map((opt, index) => {
+        const Control = Controls[opt];
+        const config = toolbar[opt];
+        if (opt === 'image' && uploadCallback) {
+          config.uploadCallback = uploadCallback;
+        }
+        return <Control key={index} {...controlProps} config={config} />;
+      })}
+      {toolbarCustomButtons &&
+        toolbarCustomButtons.map((button, index) =>
+          React.cloneElement(button, { key: index, ...controlProps })
+        )}
+    </div> : "";
     return (
       <div
         id={this.wrapperId}
@@ -445,32 +470,11 @@ class WysiwygEditor extends Component {
         onBlur={this.onWrapperBlur}
         aria-label="rdw-wrapper"
       >
-        {!toolbarHidden && (
-          <div
-            className={classNames('rdw-editor-toolbar', toolbarClassName)}
-            style={{
-              visibility: toolbarShow ? 'visible' : 'hidden',
-              ...toolbarStyle,
-            }}
-            onMouseDown={this.preventDefault}
-            aria-label="rdw-toolbar"
-            aria-hidden={(!editorFocused && toolbarOnFocus).toString()}
-            onFocus={this.onToolbarFocus}
-          >
-            {toolbar.options.map((opt, index) => {
-              const Control = Controls[opt];
-              const config = toolbar[opt];
-              if (opt === 'image' && uploadCallback) {
-                config.uploadCallback = uploadCallback;
-              }
-              return <Control key={index} {...controlProps} config={config} />;
-            })}
-            {toolbarCustomButtons &&
-              toolbarCustomButtons.map((button, index) =>
-                React.cloneElement(button, { key: index, ...controlProps })
-              )}
-          </div>
-        )}
+        {!toolbarHidden &&
+          toolbarContainer ?
+            React.cloneElement(toolbarContainer, { children: toolbarComponent }) :
+            toolbarComponent
+        }
         <div
           ref={this.setWrapperReference}
           className={classNames(editorClassName, 'rdw-editor-main')}
@@ -517,6 +521,7 @@ WysiwygEditor.propTypes = {
   stripPastedStyles: PropTypes.bool, // eslint-disable-line react/no-unused-prop-types
   toolbar: PropTypes.object,
   toolbarCustomButtons: PropTypes.array,
+  toolbarContainer: PropTypes.node,
   toolbarClassName: PropTypes.string,
   toolbarHidden: PropTypes.bool,
   locale: PropTypes.string,
